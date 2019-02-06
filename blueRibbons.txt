@@ -1,0 +1,283 @@
+1.
+change the font color of the placeholder for the Campaign input field to be the same 
+font-color of the rest of the input fields upon entering content
+
+
+Site.css+1-1
+$/BlueRibbons2/BlueRibbonsReview/BlueRibbonsReview/Content/Site.css
+}
+::-webkit-input-placeholder {
+    color: #FF0000;
+    /*color: #FF0000;*/
+    opacity: 1 !important; /* for older chrome versions. may no longer apply. */
+}
+
+
+2.
+Site.css+1-1
+make sure the "Remember me?" text and the checkbox do not overlap on the Register page for Accounts
+
+			
+#RememberMe{margin-left: 3px;}
+
+
+
+3.
+
+link to the edit view for campaigns on the SellerIndex view for the Campaigns
+and ensure that the OpenCampaign and Expiration Date input is not 
+accessible in the Edit view of a campaign to any user that is not an Admin
+
+CampaignsController.cs+16
+$/BlueRibbons2/BlueRibbonsReview/BlueRibbonsReview/Controllers/CampaignsController.cs
+            }
+            return View(campaign);
+        }
+        // GET: Campaigns/AdminView/EditAdmin
+        public ActionResult EditAdmin(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Campaign campaign = db.Campaigns.Find(id);
+            if (campaign == null)
+            {
+                return HttpNotFound();
+            }
+            return View(campaign);
+        }
+        
+	// POST: Campaigns/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+AdminView.cshtml+1-1
+$/BlueRibbons2/BlueRibbonsReview/BlueRibbonsReview/Views/Campaigns/AdminView.cshtml
+                @Html.DisplayFor(modelItem => item.ExpireDate)
+            </td>
+            <td>
+                @Html.ActionLink(" ", "Edit", new { id = item.CampaignID }, new { @class = "fa fa-pencil-square-o fa-lg" })
+                @Html.ActionLink("Edit", "EditAdmin", new { id = item.CampaignID }, new { @class = "fa fa-pencil-square-o fa-lg" })
+                @Html.ActionLink("Details", "Details", new { id = item.CampaignID })
+                @Html.ActionLink(" ", "Delete", new { id = item.CampaignID }, new { @class = "far fa-trash-alt fa-lg" })
+            </td>
+
+Edit.cshtml+7-7
+$/BlueRibbons2/BlueRibbonsReview/BlueRibbonsReview/Views/Campaigns/Edit.cshtml
+            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+        </div>
+    </div>
+        <div class="form-group">
+    @*Commented out because only the admin should have access to this input*@
+    @*<div class="form-group">
+            @Html.LabelFor(model => model.OpenCampaign, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.ValidationMessageFor(model => model.OpenCampaign, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        </div>*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.ImageUrL, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control datepicker"} })
+            @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+
+            @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+            @Html.ValidationMessageFor(model => model.CloseDate, "", new { @class = "text-danger" })
+        </div>
+    </div>
+        <div class="form-group">
+    @*Commented out because only the admin should have access to this input*@
+    @*<div class="form-group">
+            @Html.LabelFor(model => model.ExpireDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ExpireDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                @Html.ValidationMessageFor(model => model.ExpireDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        </div>*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.VendorsPurchaseInstructions, htmlAttributes: new { @class = "control-label col-md-2" })
+
+EditAdmin.cshtml+143
+$/BlueRibbons2/BlueRibbonsReview/BlueRibbonsReview/Views/Campaigns/EditAdmin.cshtml
+@model BlueRibbonsReview.Models.Campaign
+@{
+    ViewBag.Title = "EditAdmin";
+    ViewBag.TagLine = "";
+}
+@*<h2>EditAdmin</h2>*@
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        @*<h4>Campaign</h4>*@
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.CampaignID)
+        <div class="form-group">
+            @Html.LabelFor(model => model.ASIN, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ASIN, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ASIN, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+                @Html.LabelFor(model => model.OpenCampaign, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.OpenCampaign)
+                        @Html.ValidationMessageFor(model => model.OpenCampaign, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ImageUrL, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ImageUrL, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ImageUrL, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.RetailPrice, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.RetailPrice, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RetailPrice, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.SalePrice, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SalePrice, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.SalePrice, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CloseDate, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CloseDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                @Html.ValidationMessageFor(model => model.CloseDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+                @Html.LabelFor(model => model.ExpireDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ExpireDate, new { htmlAttributes = new { @class = "form-control datepicker" } })
+                    @Html.ValidationMessageFor(model => model.ExpireDate, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.VendorsPurchaseInstructions, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.VendorsPurchaseInstructions, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.VendorsPurchaseInstructions, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.VendorsPurchaseURL, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.VendorsPurchaseURL, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.VendorsPurchaseURL, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ApplicationUser, "ApplicationUser", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @*@Html.DropDownList("ApplicationUser", null, htmlAttributes: new { @class = "form-control" })*@
+                @Html.ValidationMessageFor(model => model.ApplicationUser, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-default" style="background-color: #4172a8; color: #fff" />
+            </div>
+        </div>
+    </div>
+}
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+@*<script src="~/Scripts/common/jQueryUI.js"></script>*@
+SellerIndex.cshtml+1-1
+$/BlueRibbons2/BlueRibbonsReview/BlueRibbonsReview/Views/Campaigns/SellerIndex.cshtml
+            </div>
+            <h5>
+                @* Edit link disabled until a seller-specific Edit View is added *@
+                @*@Html.ActionLink("Edit", "Edit", new { id = item.Campaign.CampaignID })*@
+                @Html.ActionLink("Edit", "Edit", new { id = item.Campaign.CampaignID }) | 
+                @Html.ActionLink("Details", "Details", new { id = item.Campaign.CampaignID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Campaign.CampaignID })
+            </h5>
+
+
+4.Display the campaigns assoiciated with the users that have campaigns in a dropbox
+on the details page of the admin.
+
+Details.cshtml+20-1
+$/BlueRibbons2/BlueRibbonsReview/BlueRibbonsReview/Views/Admin/Details.cshtml
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CampaignCount)
+            <div class="btn-group">
+                <button type="button" class="btn btn-dark">@Html.DisplayFor(modelItem => Model.CampaignCount)</button>
+                <button type="button" class="btn btn-dark dropdown-toggle" data-toggle="dropdown">
+                    <span class="caret"></span>
+                    <span class="sr-only">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu">
+                    @*foreach user create link to all campaigns they have made in the dropdown.*@
+                    @{
+                foreach (var campaign in Model.Campaigns)
+                {
+                    <li>@Html.DisplayFor(modelItem => campaign.Name)</li>
+                    }
+                    }
+                </ul>
+           </div>
+        </dd>
+        <dt>
+
+5. Move the sort by dropdown to be inline with the "write a review link"
+
+Site.css+3
+$/BlueRibbons2/BlueRibbonsReview/BlueRibbonsReview/Content/Site.css
+    display:block;
+}
+.dropdown filterArea {
+    display: inline block
+}
+Index.cshtml+1-1
+$/BlueRibbons2/BlueRibbonsReview/BlueRibbonsReview/Views/Reviews/Index.cshtml
+<p>
+<p class="dropdown filterArea">
+    <a href="@Url.Action("Create", "Reviews")"><span class="fas fa-edit fa-lg"></span>Write a Review</a>
+</p>
